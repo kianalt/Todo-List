@@ -23,11 +23,31 @@ import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 
 const formatEstimate = (estimate: number) => {
-  if (estimate < 8) return `${estimate}h`;
-  if (estimate % 160 === 0) return `${estimate / 160}m`;
-  if (estimate % 40 === 0) return `${estimate / 40}w`;
-  if (estimate % 8 === 0) return `${estimate / 8}d`;
-  return `${estimate}h`;
+  let result = "";
+
+  if (estimate >= 160) {
+    const months = Math.floor(estimate / 160);
+    estimate %= 160;
+    result += `${months}m `;
+  }
+
+  if (estimate >= 40) {
+    const weeks = Math.floor(estimate / 40);
+    estimate %= 40;
+    result += `${weeks}w `;
+  }
+
+  if (estimate >= 8) {
+    const days = Math.floor(estimate / 8);
+    estimate %= 8;
+    result += `${days}d `;
+  }
+
+  if (estimate > 0) {
+    result += `${estimate}h`;
+  }
+
+  return result.trim();
 };
 
 interface TaskListProps {

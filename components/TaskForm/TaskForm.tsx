@@ -10,7 +10,6 @@ import {
   MenuItem,
   Select,
   TextField,
-  Typography,
   Alert,
 } from "@mui/material";
 
@@ -30,6 +29,7 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, handleCloseAdd }) => {
   );
   const [estimate, setEstimate] = useState<number>(0);
   const [error, setError] = useState<string | null>(null);
+  const [newTaskHash, setNewTaskHash] = useState<string | null>(null);
 
   const validateTask = (): boolean => {
     if (!title.trim() || !/^[A-Za-z\s]+$/.test(title)) {
@@ -53,8 +53,9 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, handleCloseAdd }) => {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setError(null); // Clear any previous error messages
+    setError(null);
     if (validateTask()) {
+      const hash = Math.random().toString(36).substring(2, 7);
       const newTask: Task = {
         id: Date.now(),
         title,
@@ -62,13 +63,19 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, handleCloseAdd }) => {
         status,
         datetime: new Date(datetime),
         estimate,
-        hash: Math.random().toString(36).substring(2, 7),
+        hash,
       };
       onAddTask(newTask);
+      setNewTaskHash(hash);
+
+      setTimeout(() => {
+        setNewTaskHash(null);
+        handleCloseAdd();
+      }, 6000);
+
       setTitle("");
       setDatetime(new Date().toISOString().substring(0, 16));
       setEstimate(0);
-      handleCloseAdd();
     }
   };
 
@@ -79,6 +86,11 @@ const TaskForm: React.FC<TaskFormProps> = ({ onAddTask, handleCloseAdd }) => {
       sx={{ display: "flex", flexDirection: "column", gap: 2 }}
     >
       {error && <Alert severity="error">{error}</Alert>}
+      {newTaskHash && (
+        <Alert severity="success">
+          Task Created! value of task : {newTaskHash}
+        </Alert>
+      )}
       <TextField
         label="Task Title"
         variant="outlined"
