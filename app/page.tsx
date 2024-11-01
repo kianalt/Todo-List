@@ -1,95 +1,129 @@
-import Image from "next/image";
-import styles from "./page.module.css";
+// app/page.tsx
 
-export default function Home() {
+"use client";
+
+import React, { useState, useEffect } from "react";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import {
+  Box,
+  Button,
+  Stack,
+  Typography,
+  Modal,
+  TextField,
+  IconButton,
+} from "@mui/material";
+import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
+import SearchIcon from "@mui/icons-material/Search";
+import AddIcon from "@mui/icons-material/Add";
+
+// Component
+import Home from "../components/Home/Home";
+
+const darkTheme = createTheme({
+  palette: {
+    mode: "dark",
+    background: {
+      default: "#121212",
+    },
+    primary: {
+      main: "#90caf9",
+    },
+    secondary: {
+      main: "#f48fb1",
+    },
+  },
+});
+
+const MainPage: React.FC = () => {
+  const [openAdd, setOpenAdd] = useState(false);
+  const [dateTime, setDateTime] = useState(new Date());
+  const [searchTerm, setSearchTerm] = useState("");
+  const handleOpenAdd = () => setOpenAdd(true);
+  const handleCloseAdd = () => setOpenAdd(false);
+
+  useEffect(() => {
+    const timer = setInterval(() => setDateTime(new Date()), 1000);
+    return () => clearInterval(timer);
+  }, []);
+
   return (
-    <div className={styles.page}>
-      <main className={styles.main}>
-        <Image
-          className={styles.logo}
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol>
-          <li>
-            Get started by editing <code>app/page.tsx</code>.
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+    <ThemeProvider theme={darkTheme}>
+      <Box
+        sx={{
+          minHeight: "120vh",
+          height: "100%",
+          color: "text.primary",
+          overflowX: "hidden",
+          padding: "0",
+          margin: "0",
+          width: "100%",
+        }}
+      >
+        <Box sx={{ pt: "100px" }}>
+          <Typography
+            variant="h3"
+            align="center"
+            gutterBottom
+            sx={{
+              background:
+                "linear-gradient(45deg, #F7D8E9 48%, #E082C9 67%, #562B63 70%)",
+              WebkitBackgroundClip: "text",
+              WebkitTextFillColor: "transparent",
+              fontWeight: 800,
+            }}
+          >
+            Todo List App
+          </Typography>
+        </Box>
 
-        <div className={styles.ctas}>
-          <a
-            className={styles.primary}
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+        <Stack
+          flexDirection="row"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{ width: "100%", padding: "30px  100px" }}
+        >
+          <Box
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
-            <Image
-              className={styles.logo}
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-            className={styles.secondary}
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className={styles.footer}>
-        <a
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
+            <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+              <TextField
+                label="Search Tasks by Title"
+                variant="outlined"
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                InputProps={{
+                  endAdornment: (
+                    <IconButton onClick={() => setSearchTerm("")}>
+                      <SearchIcon />
+                    </IconButton>
+                  ),
+                }}
+                sx={{ marginRight: 2, width: "300px" }}
+              />
+              <IconButton onClick={handleOpenAdd}>
+                <AddIcon fontSize="large" />
+              </IconButton>
+            </Box>
+          </Box>
+
+          {/* Current Date and Time */}
+          <Typography variant="h6">
+            {dateTime.toLocaleDateString()} {dateTime.toLocaleTimeString()}
+          </Typography>
+        </Stack>
+        <Home
+          handleCloseAdd={handleCloseAdd}
+          openAdd={openAdd}
+          searchTerm={searchTerm}
+        />
+      </Box>
+    </ThemeProvider>
   );
-}
+};
+
+export default MainPage;
