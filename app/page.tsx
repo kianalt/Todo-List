@@ -111,7 +111,7 @@ const MainPage: React.FC = () => {
             </Box>
           </Box>
 
-          {/* Current Date and Time */}
+
           <Typography variant="h6">
             {dateTime.toLocaleDateString()} {dateTime.toLocaleTimeString()}
           </Typography>
